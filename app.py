@@ -4,11 +4,19 @@ import plotly.express as px
 
 st.title("Dashboard de Productos por Categoría")
 
-# Cargar archivo CSV (reemplaza con tu ruta o usa uploader)
+# Cargar archivo CSV
 df = pd.read_csv("amazon.csv")
 
-# Limpieza básica
-df = df.dropna(subset=['category', 'rating_count', 'actual_price', 'discount_percentage', 'rating'])
+# Forzar columnas numéricas
+df['actual_price'] = pd.to_numeric(df['actual_price'], errors='coerce')
+df['discounted_price'] = pd.to_numeric(df['discounted_price'], errors='coerce')
+df['discount_percentage'] = pd.to_numeric(df['discount_percentage'], errors='coerce')
+df['rating'] = pd.to_numeric(df['rating'], errors='coerce')
+df['rating_count'] = pd.to_numeric(df['rating_count'], errors='coerce')
+
+# Limpiar datos con valores faltantes en columnas importantes
+df = df.dropna(subset=['category', 'rating_count', 'actual_price', 'discounted_price', 'discount_percentage', 'rating'])
+
 df['category'] = df['category'].str.lower()
 
 categorias = df['category'].unique()
@@ -49,7 +57,7 @@ for categoria in categorias:
                         title="Frecuencia de Descuentos")
     st.plotly_chart(fig2, use_container_width=True)
 
-    # Rating promedio por producto (scatter para ver relación rating-count)
+    # Rating vs cantidad de reseñas
     st.subheader("Rating vs Cantidad de Reseñas")
     fig3 = px.scatter(df_cat, x='rating_count', y='rating',
                       hover_data=['product_name'],
