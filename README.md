@@ -1,2 +1,2 @@
 # AmazonSales
-Análisis de ventas en Amazon
+Análisis exploratorio de ventas en Amazon
